@@ -19,7 +19,8 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Emp> Task1()
     {
-        return null;
+        return Emps
+            .Where(x => x.Job == "Backend programmer");
     }
 
     /// <summary>
@@ -27,7 +28,9 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Emp> Task2()
     {
-        return null;
+        return Emps
+            .Where(x => x.Job == "Frontend programmer" && x.Salary > 1000)
+            .OrderByDescending(x => x.Ename);
     }
 
 
