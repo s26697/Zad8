@@ -39,7 +39,8 @@ public static partial class Tasks
     /// </summary>
     public static int Task3()
     {
-        return -1;
+        return Emps
+            .Where(x => x.Salary == Emps.Max().Salary);
     }
 
     /// <summary>
@@ -47,7 +48,8 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Emp> Task4()
     {
-        return null;
+        return Emps
+            .Where(x => x.Salary == Emps.Max().Salary);
     }
 
     /// <summary>
