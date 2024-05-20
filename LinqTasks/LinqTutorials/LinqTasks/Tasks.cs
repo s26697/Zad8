@@ -39,8 +39,7 @@ public static partial class Tasks
     /// </summary>
     public static int Task3()
     {
-        return Emps
-            .Where(x => x.Salary == Emps.Max().Salary);
+        return Emps.Max(e => e.Salary);
     }
 
     /// <summary>
@@ -49,7 +48,7 @@ public static partial class Tasks
     public static IEnumerable<Emp> Task4()
     {
         return Emps
-            .Where(x => x.Salary == Emps.Max().Salary);
+            .Where(x => x.Salary == Emps.Max(e => e.Salary));
     }
 
     /// <summary>
@@ -57,7 +56,7 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task5()
     {
-        return null;
+        return Emps.Select(e => new {Nazwisko = e.Ename, Praca = e.Job});
     }
 
     /// <summary>
@@ -67,7 +66,11 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task6()
     {
-        return null;
+        return Emps.Join(
+            Depts,
+            Emp => Emp.Deptno,
+            dept => dept.Deptno,
+            (emp, dept) => new {emp.Ename, emp.Job, dept.Dname});
     }
 
     /// <summary>
@@ -75,7 +78,8 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task7()
     {
-        return null;
+        return Emps.GroupBy(e => e.Job)
+            .Select(g => new { Praca = g.Key, LiczbaPracownikow = g.Count() });
     }
 
     /// <summary>
@@ -84,7 +88,7 @@ public static partial class Tasks
     /// </summary>
     public static bool Task8()
     { 
-        return false;
+        return Emps.Any(e => e.Job == "Backend programmer");
     }
 
     /// <summary>
@@ -93,7 +97,7 @@ public static partial class Tasks
     /// </summary>
     public static Emp Task9()
     {
-        return null;
+        return Emps.Where(e => e.Job == "Frontend programmer").MaxBy(e => e.HireDate);
     }
 
     /// <summary>
@@ -103,7 +107,10 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task10()
     {
-        return null;
+        var baseQuery = Emps.Select(e => new { e.Ename, e.Job, e.HireDate });
+        var unionQuery = new List<object> { new { Ename = "Brak wartości", Job = (string)null, HireDate = (DateTime?)null } };
+    
+        return baseQuery.Concat(unionQuery);
     }
 
     /// <summary>
@@ -119,7 +126,13 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task11()
     {
-        return null;
+        return Depts.GroupJoin(
+                Emps,
+                dept => dept.Deptno,
+                emp => emp.Deptno,
+                (dept, emps) => new { DeptName = dept.Dname, Employees = emps })
+            .Where(d => d.Employees.Count() > 1)
+            .Select(d => new { name = d.DeptName, numOfEmployees = d.Employees.Count() });
     }
 
     /// <summary>
@@ -144,7 +157,10 @@ public static partial class Tasks
     /// </summary>
     public static int Task13(int[] arr)
     {
-        return -1;
+        return arr.GroupBy(i => i)
+            .Where(g => g.Count() % 2!= 0)
+            .Select(g => g.Key)
+            .Single();
     }
 
     /// <summary>
@@ -153,6 +169,7 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Dept> Task14()
     {
-        return null;
+        return Depts.Where(dept => Emps.All(emp => emp.Deptno != dept.Deptno) || Emps.Count(emp => emp.Deptno == dept.Deptno) == 5)
+            .OrderBy(dept => dept.Dname);
     }
 }
